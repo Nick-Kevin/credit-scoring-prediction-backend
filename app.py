@@ -3,8 +3,10 @@ import pickle
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+pd.set_option('display.max_columns', None)
+
 scaler = pickle.load(open('components/scaler.pkl', 'rb'))
-model = pickle.load(open('components/xgb-model.pkl', 'rb'))
+model = pickle.load(open('components/rf-model.pkl', 'rb'))
 
 app = Flask(__name__)
 CORS(app) # enable the react front app to access this API
@@ -16,35 +18,6 @@ def get_data():
 @app.route('/api/endpoint', methods=['POST'])
 def handle_json():
     data = request.get_json()
-
-    # persoItems = float(data.get('persoItems'))
-    # assetQuality = float(data.get('assetQuality'))
-    # arrearRiskScore = float(data.get('arrearRiskScore'))
-    # loanAccount = float(data.get('loanAccount'))
-    # creditDiversity = float(data.get('assetQuality'))
-    # productCount = float(data.get('productCount'))
-    # activityScore = float(data.get('activityScore'))
-    # age = float(data.get('age'))
-    # educationLevel = float(data.get('educationLevel'))
-    # loanDuration = float(data.get('loanDuration'))
-    # loanAmount = float(data.get('loanAmount'))
-    # workingExperience = float(data.get('workingExperience'))
-    # jobTitle = float(data.get('jobTitle'))
-    # durationCompany = float(data.get('durationCompany'))
-    # industry = float(data.get('industry'))
-    # secondaryType = float(data.get('secondaryType'))
-    # income = float(data.get('income'))
-    # maritalStatus = float(data.get('maritalStatus'))
-    # writesOff = float(data.get('writesOff'))
-    # arrears = float(data.get('arrears'))
-    # lastArrears = float(data.get('lastArrears'))
-    # cardHistory = float(data.get('cardHistory'))
-    # creditUtilisation = float(data.get('creditUtilisation'))
-    # creditLastYear = float(data.get('creditLastYear'))
-    # purchaseLastYear = float(data.get('purchaseLastYear'))
-    # loanLastYear = float(data.get('loanLastYear'))
-    # debtRatio = float(data.get('debtRatio'))
-    # emis = float(data.get('emis'))
 
     data_dico = {
         'Total_Personal_Items': float(data.get('persoItems')),
@@ -79,6 +52,7 @@ def handle_json():
 
     data_pd = pd.DataFrame(data_dico, index=[0])
 
+    print(data_pd)
     scaled_data = scaler.transform(data_pd)
     risk_level = model.predict(scaled_data)
     
