@@ -56,7 +56,7 @@ def handle_json():
     scaled_data = scaler.transform(data_pd)
     risk_level = model.predict(scaled_data)
     
-    return jsonify({"received": risk_level[0].item()})
+    return jsonify({"result": risk_level[0].item()})
 
 
 # ensures the development server only starts if you run the script directly,
